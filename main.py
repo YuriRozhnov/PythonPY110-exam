@@ -1,16 +1,70 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from conf import MODEL
+import random
+from faker import Faker
+import json
 
 
-# Press the green button in the gutter to run the script.
+def title(f):
+    return random.choice(f.readlines()).strip()
+
+
+def year():
+    return random.randint(1900, 2021)
+
+
+def pages():
+    return random.randint(1, 3000)
+
+
+def isbn13(fake):
+    return fake.isbn13()
+
+
+def rating():
+    return round(random.random()*10 % 5, 2)
+
+
+def price():
+    return round(random.random()*1000, 2)
+
+
+def author(fake):
+    return [fake.name() for i in range(random.randint(1, 3))]
+
+
+def gen_book(pk):
+    while True:
+        with open("books.txt", 'r') as f:
+            fake = Faker()
+            data = {
+                "model": MODEL,
+                "pk": pk,
+                "fields": {
+                    "title": title(f),
+                    "year": year(),
+                    "pages": pages(),
+                    "isbn13": isbn13(fake),
+#  "isbn13": f"{random.randint(100, 999)}-{random.randint(0, 9)}-{random.randint(10000, 99999)}-{random.randint(100, 999)}-{random.randint(0, 9)}", #Faker.Code.isbn13 #Faker.providers.isbn
+                    "rating": rating(),
+                    "price": price(),
+                    "author": author(fake)
+                }
+            }
+            pk += 1
+            yield data
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    books_generator = gen_book(1)
+#   print(next(books_generator))
+#   print(next(books_generator))
+#   print(next(books_generator))
+    res = []
+    for i in range(100):
+        res.append(next(books_generator))
+    # with open("out.txt", 'w') as f:
+    #    f.write(str(json.dumps(res)))
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    with open("out.txt", 'w', encoding='utf-8') as f:
+        for book in res:
+            f.write(str(json.dumps(book, ensure_ascii=False)) + '\n')
