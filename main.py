@@ -5,10 +5,19 @@ import json
 
 
 def title(f):
+    """
+
+    :param f: file
+    :return: random name from file
+    """
     return random.choice(f.readlines()).strip()
 
 
 def year():
+    """
+
+    :return:
+    """
     return random.randint(1900, 2021)
 
 
