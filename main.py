@@ -92,7 +92,7 @@ def gen_book(pk):
 
 if __name__ == '__main__':
     books_generator = gen_book(1)
-#   print(next(books_generator))
+    print(next(books_generator))
 #   print(next(books_generator))
 #   print(next(books_generator))
     res = []
